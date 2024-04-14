@@ -4,7 +4,6 @@ namespace MassTransit.Serialization;
 
 public class ProtobufMessageSerializer : IMessageSerializer
 {
-    // might be application/vnd.google.protobuf or application/x-protobuf or application/x-google-protobuf or application/protobuf
     public const string ContentTypeHeaderValue = "application/vnd.masstransit+pbuf";
     public static readonly ContentType ProtobufContentType = new(ContentTypeHeaderValue);
 

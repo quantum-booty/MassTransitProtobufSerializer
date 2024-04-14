@@ -8,7 +8,6 @@ public class ProtobufMessageDeserializer : IMessageDeserializer
 {
     private readonly IObjectDeserializer _objectDeserializer;
 
-    // public ProtobufMessageDeserializer() => _objectDeserializer = new ProtobufObjectDeserializer();
     public ProtobufMessageDeserializer() => _objectDeserializer = SystemTextJsonMessageSerializer.Instance;
 
     public void Probe(ProbeContext context)

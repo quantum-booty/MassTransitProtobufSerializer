@@ -45,7 +45,9 @@ public abstract class ProtobufBodySerializerContext :
             return true;
         }
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         message = null;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         return false;
     }
 

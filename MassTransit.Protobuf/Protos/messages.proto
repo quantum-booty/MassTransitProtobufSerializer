@@ -18,14 +18,14 @@ message ProtobufEnvelopeMessage {
   bytes Message = 11;
   google.protobuf.Timestamp ExpirationTime = 12;
   google.protobuf.Timestamp SentTime = 13;
-  repeated HeaderEntryMessage headers = 14;
+  bytes headers = 14;
   HostInfoMessage Host = 15;
 }
 
-message HeaderEntryMessage {
-  string Key = 1;
-  google.protobuf.StringValue Value = 2;
-}
+// message HeaderEntryMessage {
+//   string Key = 1;
+//   google.protobuf.StringValue Value = 2;
+// }
 
 message HostInfoMessage {
   google.protobuf.StringValue MachineName = 1;

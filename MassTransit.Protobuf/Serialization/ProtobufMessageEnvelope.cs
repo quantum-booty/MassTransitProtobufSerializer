@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using MassTransit;
@@ -46,7 +47,7 @@ public class ProtobufMessageEnvelope : MessageEnvelope
             Message = byteString,
             ExpirationTime = ExpirationTime.HasValue ? Timestamp.FromDateTime(ExpirationTime.Value) : null,
             SentTime = SentTime.HasValue ? Timestamp.FromDateTime(SentTime.Value) : null,
-            Headers = { Headers?.Select(x => new HeaderEntryMessage { Key = x.Key, Value = (string?)x.Value }) ?? Array.Empty<HeaderEntryMessage>() },
+            Headers = UnsafeByteOperations.UnsafeWrap(JsonSerializer.SerializeToUtf8Bytes(Headers)),
             Host = Host != null ? new HostInfoMessage
             {
                 MachineName = Host.MachineName,
@@ -120,7 +121,9 @@ public class ProtobufMessageEnvelope : MessageEnvelope
         Message = envelope.Message;
         ExpirationTime = envelope.ExpirationTime;
         SentTime = envelope.SentTime ?? DateTime.UtcNow;
-        Headers = envelope.Headers;
+        Headers = envelope.Headers != null
+            ? new Dictionary<string, object?>(envelope.Headers, StringComparer.OrdinalIgnoreCase)
+            : new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
         Host = envelope.Host ?? HostMetadataCache.Host;
     }
 
@@ -139,7 +142,17 @@ public class ProtobufMessageEnvelope : MessageEnvelope
         Message = envelope.Message;
         ExpirationTime = envelope.ExpirationTime?.ToDateTime();
         SentTime = envelope.SentTime?.ToDateTime();
-        Headers = envelope.Headers?.ToDictionary(x => x.Key, x => (object?)x.Value, StringComparer.OrdinalIgnoreCase);
+        Headers = JsonSerializer.Deserialize<Dictionary<string, object?>?>(envelope.Headers.Span)?.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase);
+
+        if (envelope.Headers.IsEmpty)
+            Headers = new(StringComparer.OrdinalIgnoreCase);
+        else
+        {
+            var deserialisedHeaders = JsonSerializer.Deserialize<Dictionary<string, object?>?>(envelope.Headers.Span);
+            Headers = deserialisedHeaders != null
+                ? new(deserialisedHeaders, StringComparer.OrdinalIgnoreCase)
+                : new(StringComparer.OrdinalIgnoreCase);
+        }
         Host = Host != null ? new ProtobufHostInfo
         {
             MachineName = envelope.Host.MachineName,

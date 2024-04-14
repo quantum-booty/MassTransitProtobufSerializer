@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Google.Protobuf;
 using MassTransit.Util;
@@ -7,7 +8,18 @@ namespace MassTransit.Serialization;
 
 public static class ProtobufParserUtils
 {
+    private static readonly ConcurrentDictionary<Type, Func<ByteString, object>> _cache = new();
     public static T Parse<T>(ByteString byteString) where T : class, IMessage<T>, new() => new MessageParser<T>(() => new T()).ParseFrom(byteString);
+    public static Func<ByteString, object> GetParser(Type type)
+        => _cache.GetOrAdd(
+                type,
+                _ =>
+                {
+                    var method = typeof(ProtobufParserUtils).GetMethod(nameof(Parse))!.MakeGenericMethod(type);
+                    var func = (Func<ByteString, object>)method.CreateDelegate(typeof(Func<ByteString, object>));
+                    return func;
+                }
+        );
 }
 
 public abstract class ProtobufBodySerializerContext :
@@ -23,32 +35,29 @@ public abstract class ProtobufBodySerializerContext :
     public override bool TryGetMessage<T>(out T? message)
         where T : class
     {
-        var deserialised = typeof(ProtobufParserUtils).GetMethod(nameof(Parse))!.MakeGenericMethod(typeof(T)).Invoke(this, new object?[] { _message }) ?? throw new InvalidOperationException();
-        if (deserialised != null)
-        {
-            message = (T)deserialised;
-            return true;
-        }
-
-        message = default;
-        return false;
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        message = null;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        if (_message == null)
+            return false;
+        var parser = ProtobufParserUtils.GetParser(typeof(T));
+        message = parser((ByteString)_message) as T;
+        return message != null;
     }
 
     private static T Parse<T>(ByteString byteString) where T : class, IMessage<T>, new() => new MessageParser<T>(() => new T()).ParseFrom(byteString);
 
     public override bool TryGetMessage(Type messageType, out object message)
     {
-        var deserialised = typeof(ProtobufParserUtils).GetMethod(nameof(Parse))!.MakeGenericMethod(messageType).Invoke(this, new object?[] { _message }) ?? throw new InvalidOperationException();
-        if (deserialised != null)
-        {
-            message = deserialised;
-            return true;
-        }
-
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         message = null;
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-        return false;
+
+        if (_message == null)
+            return false;
+        var parser = ProtobufParserUtils.GetParser(messageType);
+        message = parser((ByteString)_message);
+        return message != null;
     }
 
     public override Dictionary<string, object> ToDictionary<T>(T? message)

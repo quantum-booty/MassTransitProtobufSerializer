@@ -45,8 +45,6 @@ public abstract class ProtobufBodySerializerContext :
         return message != null;
     }
 
-    private static T Parse<T>(ByteString byteString) where T : class, IMessage<T>, new() => new MessageParser<T>(() => new T()).ParseFrom(byteString);
-
     public override bool TryGetMessage(Type messageType, out object message)
     {
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.

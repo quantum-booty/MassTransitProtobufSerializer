@@ -23,7 +23,7 @@ public class Worker : BackgroundService
                 context.ContentType = ProtobufMessageSerializer.ProtobufContentType;
             }, stoppingToken);
 
-            await Task.Delay(1000, stoppingToken);
+            // await Task.Delay(1, stoppingToken);
         }
     }
 }

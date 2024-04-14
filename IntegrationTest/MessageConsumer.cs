@@ -5,8 +5,7 @@ using Protocol;
 
 namespace IntegrationTest;
 
-public class MessageConsumer :
-    IConsumer<Message>
+public partial class MessageConsumer : IConsumer<Message>
 {
     private readonly ILogger<MessageConsumer> _logger;
 
@@ -14,8 +13,11 @@ public class MessageConsumer :
 
     public Task Consume(ConsumeContext<Message> context)
     {
-        _logger.LogInformation("Received Text: {Text}", context.Message.Text);
+        LogReceived(_logger, context.Message.Text);
 
         return Task.CompletedTask;
     }
+
+    [LoggerMessage(1, LogLevel.Information, "Received Text: {Text}")]
+    private static partial void LogReceived(ILogger logger, string text);
 }

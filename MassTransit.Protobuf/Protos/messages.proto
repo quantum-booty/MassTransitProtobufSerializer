@@ -1,0 +1,39 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "MassTransit";
+
+message ProtobufEnvelopeMessage {
+  google.protobuf.StringValue MessageId = 1;
+  google.protobuf.StringValue RequestId = 2;
+  google.protobuf.StringValue CorrelationId = 3;
+  google.protobuf.StringValue ConversationId = 4;
+  google.protobuf.StringValue InitiatorId = 5;
+  google.protobuf.StringValue SourceAddress = 6;
+  google.protobuf.StringValue DestinationAddress = 7;
+  google.protobuf.StringValue ResponseAddress = 8;
+  google.protobuf.StringValue FaultAddress = 9;
+  repeated google.protobuf.StringValue MessageType = 10;
+  bytes Message = 11;
+  google.protobuf.Timestamp ExpirationTime = 12;
+  google.protobuf.Timestamp SentTime = 13;
+  repeated HeaderEntryMessage headers = 14;
+  HostInfoMessage Host = 15; // TODO: proper host
+}
+
+message HeaderEntryMessage {
+  string Key = 1;
+  google.protobuf.StringValue Value = 2;
+}
+
+message HostInfoMessage {
+  google.protobuf.StringValue MachineName = 1;
+  google.protobuf.StringValue ProcessName = 2;
+  int32 ProcessId = 3;
+  google.protobuf.StringValue Assembly = 4;
+  google.protobuf.StringValue AssemblyVersion = 5;
+  google.protobuf.StringValue FrameworkVersion = 6;
+  google.protobuf.StringValue MassTransitVersion = 7;
+  google.protobuf.StringValue OperatingSystemVersion = 8;
+}

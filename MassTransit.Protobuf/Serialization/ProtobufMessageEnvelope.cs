@@ -67,24 +67,15 @@ public class ProtobufMessageEnvelope : MessageEnvelope
 
     public ProtobufMessageEnvelope(SendContext context, object? message, string[] messageTypeNames)
     {
-        if (context.MessageId.HasValue)
-            MessageId = context.MessageId.Value.ToString();
-        if (context.RequestId.HasValue)
-            RequestId = context.RequestId.Value.ToString();
-        if (context.CorrelationId.HasValue)
-            CorrelationId = context.CorrelationId.Value.ToString();
-        if (context.ConversationId.HasValue)
-            ConversationId = context.ConversationId.Value.ToString();
-        if (context.InitiatorId.HasValue)
-            InitiatorId = context.InitiatorId.Value.ToString();
-        if (context.SourceAddress != null)
-            SourceAddress = context.SourceAddress.ToString();
-        if (context.DestinationAddress != null)
-            DestinationAddress = context.DestinationAddress.ToString();
-        if (context.ResponseAddress != null)
-            ResponseAddress = context.ResponseAddress.ToString();
-        if (context.FaultAddress != null)
-            FaultAddress = context.FaultAddress.ToString();
+        MessageId = context.MessageId?.ToString();
+        RequestId = context.RequestId?.ToString();
+        CorrelationId = context.CorrelationId?.ToString();
+        ConversationId = context.ConversationId?.ToString();
+        InitiatorId = context.InitiatorId?.ToString();
+        SourceAddress = context.SourceAddress?.ToString();
+        DestinationAddress = context.DestinationAddress?.ToString();
+        ResponseAddress = context.ResponseAddress?.ToString();
+        FaultAddress = context.FaultAddress?.ToString();
         MessageType = messageTypeNames;
         Message = message;
         if (context.TimeToLive.HasValue)
@@ -96,24 +87,15 @@ public class ProtobufMessageEnvelope : MessageEnvelope
 
     public ProtobufMessageEnvelope(MessageContext context, object? message, string[] messageTypeNames)
     {
-        if (context.MessageId.HasValue)
-            MessageId = context.MessageId.Value.ToString();
-        if (context.RequestId.HasValue)
-            RequestId = context.RequestId.Value.ToString();
-        if (context.CorrelationId.HasValue)
-            CorrelationId = context.CorrelationId.Value.ToString();
-        if (context.ConversationId.HasValue)
-            ConversationId = context.ConversationId.Value.ToString();
-        if (context.InitiatorId.HasValue)
-            InitiatorId = context.InitiatorId.Value.ToString();
-        if (context.SourceAddress != null)
-            SourceAddress = context.SourceAddress.ToString();
-        if (context.DestinationAddress != null)
-            DestinationAddress = context.DestinationAddress.ToString();
-        if (context.ResponseAddress != null)
-            ResponseAddress = context.ResponseAddress.ToString();
-        if (context.FaultAddress != null)
-            FaultAddress = context.FaultAddress.ToString();
+        MessageId = context.MessageId?.ToString();
+        RequestId = context.RequestId?.ToString();
+        CorrelationId = context.CorrelationId?.ToString();
+        ConversationId = context.ConversationId?.ToString();
+        InitiatorId = context.InitiatorId?.ToString();
+        SourceAddress = context.SourceAddress?.ToString();
+        DestinationAddress = context.DestinationAddress?.ToString();
+        ResponseAddress = context.ResponseAddress?.ToString();
+        FaultAddress = context.FaultAddress?.ToString();
         MessageType = messageTypeNames;
         Message = message;
         if (context.ExpirationTime.HasValue)

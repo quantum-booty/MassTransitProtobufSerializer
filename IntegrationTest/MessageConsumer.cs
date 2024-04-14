@@ -8,7 +8,7 @@ namespace IntegrationTest;
 
 public static class Counter
 {
-    public static int Count { get; set; }
+    public static decimal Count { get; set; }
     public static readonly DateTime StartTime = DateTime.UtcNow;
 }
 
@@ -21,8 +21,9 @@ public partial class MessageConsumer : IConsumer<Message>
     public Task Consume(ConsumeContext<Message> context)
     {
         var secondPassed = (DateTime.UtcNow - Counter.StartTime).TotalSeconds;
-        var messagePerSec = Counter.Count / secondPassed;
-        LogReceived(_logger, context.CorrelationId.ToString(), context.Message.Text, Counter.Count, secondPassed, messagePerSec);
+        var messagePerSec = Counter.Count / (decimal)secondPassed;
+        if (Counter.Count % 100000 == 0)
+            LogReceived(_logger, context.CorrelationId.ToString(), context.Message.Text, Counter.Count, secondPassed, messagePerSec);
         Counter.Count += 1;
         var headers = context.Headers;
 
@@ -30,5 +31,5 @@ public partial class MessageConsumer : IConsumer<Message>
     }
 
     [LoggerMessage(1, LogLevel.Information, "{correlationId} Received Text: {Text} {count} {secondPassed} {messagePerSec}")]
-    private static partial void LogReceived(ILogger logger, string? correlationId, string text, int count, double secondPassed, double messagePerSec);
+    private static partial void LogReceived(ILogger logger, string? correlationId, string text, decimal count, double secondPassed, decimal messagePerSec);
 }

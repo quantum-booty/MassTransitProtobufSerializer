@@ -18,6 +18,7 @@ public class Program
             {
                 services.AddMassTransit(x =>
                 {
+                    x.SetKebabCaseEndpointNameFormatter();
                     x.AddConsumer<MessageConsumer>();
                     x.UsingInMemory((context, cfg) =>
                     {

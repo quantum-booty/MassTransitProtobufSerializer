@@ -30,5 +30,5 @@ public partial class MessageConsumer : IConsumer<Message>
     }
 
     [LoggerMessage(1, LogLevel.Information, "{correlationId} Received Text: {Text} {count} {secondPassed} {messagePerSec}")]
-    private static partial void LogReceived(ILogger logger, string correlationId, string text, int count, double secondPassed, double messagePerSec);
+    private static partial void LogReceived(ILogger logger, string? correlationId, string text, int count, double secondPassed, double messagePerSec);
 }

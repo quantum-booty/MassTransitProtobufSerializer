@@ -19,7 +19,7 @@ message ProtobufEnvelopeMessage {
   google.protobuf.Timestamp ExpirationTime = 12;
   google.protobuf.Timestamp SentTime = 13;
   repeated HeaderEntryMessage headers = 14;
-  HostInfoMessage Host = 15; // TODO: proper host
+  HostInfoMessage Host = 15;
 }
 
 message HeaderEntryMessage {

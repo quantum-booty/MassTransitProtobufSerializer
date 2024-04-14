@@ -96,9 +96,7 @@ public class ProtobufMessageEnvelope : MessageEnvelope
         if (context.TimeToLive.HasValue)
             ExpirationTime = DateTime.UtcNow + context.TimeToLive;
         SentTime = context.SentTime ?? DateTime.UtcNow;
-        Headers = new Dictionary<string, object?>();
-        foreach (var header in context.Headers.GetAll())
-            Headers[header.Key] = header.Value;
+        _headers = context.Headers.GetAll().ToDictionary(x => x.Key, x => x.Value as string, StringComparer.OrdinalIgnoreCase);
         Host = HostMetadataCache.Host;
     }
 
@@ -127,9 +125,7 @@ public class ProtobufMessageEnvelope : MessageEnvelope
         if (context.ExpirationTime.HasValue)
             ExpirationTime = context.ExpirationTime;
         SentTime = context.SentTime ?? DateTime.UtcNow;
-        Headers = new Dictionary<string, object?>();
-        foreach (var header in context.Headers.GetAll())
-            Headers[header.Key] = header.Value;
+        _headers = context.Headers.GetAll().ToDictionary(x => x.Key, x => x.Value as string, StringComparer.OrdinalIgnoreCase);
         Host = HostMetadataCache.Host;
     }
 
@@ -215,9 +211,9 @@ public class ProtobufMessageEnvelope : MessageEnvelope
             ExpirationTime = DateTime.UtcNow + (context.TimeToLive > TimeSpan.Zero ? context.TimeToLive : TimeSpan.FromSeconds(1));
 
         foreach (var header in context.Headers.GetAll())
-            if (Headers != null)
-                Headers[header.Key] = header.Value;
+            if (_headers != null)
+                _headers[header.Key] = header.Value as string;
             else
-                Headers = new Dictionary<string, object?> { { header.Key, header.Value } };
+                _headers = new Dictionary<string, string?> { { header.Key, header.Value as string } };
     }
 }

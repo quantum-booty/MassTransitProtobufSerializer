@@ -20,7 +20,9 @@ public class Worker : BackgroundService
         {
             await _bus.Publish(new Message { Text = $"The time is {DateTimeOffset.Now}" }, context =>
             {
-                context.ContentType = ProtobufMessageSerializer.ProtobufContentType;
+                // context.ContentType = ProtobufMessageSerializer.ProtobufContentType;
+                // context.CorrelationId = NewId.Next().ToGuid();
+                context.Headers.Set("test", "yaya");
             }, stoppingToken);
 
             // await Task.Delay(1, stoppingToken);

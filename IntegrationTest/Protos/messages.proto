@@ -7,3 +7,11 @@ option csharp_namespace = "Protocol";
 message Message {
   string text = 1;
 }
+
+message RequestMessage {
+  string text = 1;
+}
+
+message ResponseMessage {
+  string text = 1;
+}

@@ -20,6 +20,7 @@ public class Program
                 {
                     x.SetKebabCaseEndpointNameFormatter();
                     x.AddConsumer<MessageConsumer>();
+                    x.AddConsumer<TestRequestConsumer>();
                     x.UsingInMemory((context, cfg) =>
                     {
                         cfg.UseProtobufSerializer();

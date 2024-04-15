@@ -16,9 +16,9 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await _bus.Publish(new Message { Text = $"The time is {DateTimeOffset.Now}" }, context =>
+        // while (!stoppingToken.IsCancellationRequested)
+        // {
+            await _bus.Publish(new Batch<Message> { Text = $"The time is {DateTimeOffset.Now}" }, context =>
             {
                 // context.ContentType = ProtobufMessageSerializer.ProtobufContentType;
                 // context.CorrelationId = NewId.Next().ToGuid();
@@ -26,6 +26,6 @@ public class Worker : BackgroundService
             }, stoppingToken);
 
             // await Task.Delay(1, stoppingToken);
-        }
+        // }
     }
 }
